@@ -1,0 +1,14 @@
+{
+  "name": "youxi-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "youxi match3 guest register backend (EdgeOne Pages Cloud Functions + MongoDB Atlas)",
+  "main": "serve-local.js",
+  "scripts": {
+    "start": "node serve-local.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mongodb": "^6.8.0"
+  }
+}
