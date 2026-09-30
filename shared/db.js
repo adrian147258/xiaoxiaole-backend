@@ -29,6 +29,8 @@ async function ensureDb() {
       const d = c.db(DB_NAME);
       // 用户名唯一索引：并发/重复注册兜底（createIndex 幂等，重复执行不报错）
       await d.collection('users').createIndex({ username: 1 }, { unique: true });
+      // 进度存档唯一索引：防止同一用户出现两条存档（$max upsert 并发撞索引时的兜底）
+      await d.collection('progress').createIndex({ username: 1 }, { unique: true });
       client = c;
       db = d;
       console.log('[db] MongoDB 已连接');
@@ -48,4 +50,9 @@ function getUsers() {
   return db.collection('users');
 }
 
-module.exports = { isDbReady, ensureDb, getUsers };
+/** 进度存档集合（独立于 users，避免认证数据与游戏数据耦合） */
+function getProgress() {
+  return db.collection('progress');
+}
+
+module.exports = { isDbReady, ensureDb, getUsers, getProgress };

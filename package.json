@@ -5,7 +5,8 @@
   "description": "youxi match3 guest register backend (EdgeOne Pages Cloud Functions + MongoDB Atlas)",
   "main": "serve-local.js",
   "scripts": {
-    "start": "node serve-local.js"
+    "start": "node serve-local.js",
+    "test": "node --test test/token.test.js test/progress.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
