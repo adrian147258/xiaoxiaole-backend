@@ -8,15 +8,15 @@
 
 /**
  * 关卡总数必须与前端 src/game/levels/index.ts 的 TOTAL_LEVELS 保持一致。
- * 当前 = 6 个手写关 + 12 个程序化关 = 18。加关时两边一起改。
+ * 当前 = 6 个启程关 + 12 个秘境关 + 6 个远征关 = 24。
  */
-const TOTAL_LEVELS = 18;
+const TOTAL_LEVELS = 24;
 
 /** 解锁上限：0 基下标 */
 const MAX_UNLOCKED = TOTAL_LEVELS - 1;
 
 /** 合法关卡 id：level-001..level-006 / procedural-1..procedural-12（已核实真实格式） */
-const LEVEL_ID = /^(level-\d{3}|procedural-\d{1,2})$/;
+const LEVEL_ID = /^(level-00[1-6]|procedural-([1-9]|1[0-2])|chapter-0(19|2[0-4]))$/;
 
 /** 星数 map 的 key 上限，防超大 payload */
 const MAX_STARS_KEYS = 100;

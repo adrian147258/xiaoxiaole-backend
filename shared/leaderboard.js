@@ -1,6 +1,6 @@
 'use strict';
 
-const LEVEL_ID = /^(level-00[1-6]|procedural-([1-9]|1[0-2]))$/;
+const LEVEL_ID = /^(level-00[1-6]|procedural-([1-9]|1[0-2])|chapter-0(19|2[0-4]))$/;
 function sanitizeRun(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
   if (typeof input.levelId !== 'string' || !LEVEL_ID.test(input.levelId)) return null;

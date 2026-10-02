@@ -33,7 +33,7 @@ test('数字字符串按数字处理（"3" 等价 3），但越界的字符串�
 test('unlocked 边界值 0 与 MAX_UNLOCKED 通过', () => {
   assert.strictEqual(sanitizeProgress({ unlocked: 0, stars: {} }).unlocked, 0);
   assert.strictEqual(sanitizeProgress({ unlocked: MAX_UNLOCKED, stars: {} }).unlocked, MAX_UNLOCKED);
-  assert.strictEqual(TOTAL_LEVELS, 18);
+  assert.strictEqual(TOTAL_LEVELS, 24);
 });
 
 test('未知关卡 id 静默丢弃，不算非法', () => {
