@@ -6,7 +6,7 @@
   "main": "serve-local.js",
   "scripts": {
     "start": "node serve-local.js",
-    "test": "node --test test/token.test.js test/progress.test.js"
+    "test": "node --test test/token.test.js test/progress.test.js test/leaderboard.test.js test/router-leaderboard.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

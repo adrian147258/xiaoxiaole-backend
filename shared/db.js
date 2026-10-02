@@ -55,4 +55,10 @@ function getProgress() {
   return db.collection('progress');
 }
 
-module.exports = { isDbReady, ensureDb, getUsers, getProgress };
+let leaderboard = null;
+/** 排行榜独立集合，索引按排行榜请求延迟创建，不影响认证和原存档。 */
+function getLeaderboard() {
+  if (!leaderboard) leaderboard = db.collection('leaderboard');
+  return leaderboard;
+}
+module.exports = { isDbReady, ensureDb, getUsers, getProgress, getLeaderboard };

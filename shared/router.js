@@ -4,7 +4,8 @@
 //
 // 注意：线上云函数用的是 **Web 标准 Request/Response**（不是 event/body 那套），
 // 所以取头一律用 request.headers.get(...)，取 body 用 request.text() / request.json()。
-const { ensureDb, isDbReady, getProgress } = require('./db.js');
+const { ensureDb, isDbReady, getProgress, getLeaderboard } = require('./db.js');
+const { LEVEL_ID: RANK_LEVEL_ID, sanitizeRun, saveRun, loadLeaderboard } = require('./leaderboard.js');
 const { register, login } = require('./auth.js');
 const { verifyToken, bearerFromRequest, isTokenReady } = require('./token.js');
 const {
@@ -204,6 +205,40 @@ async function handleApiRequest(request) {
       return json(request, 200, { ok: true, progress });
     } catch (err) {
       console.error('[router] 写存档异常:', err && err.message ? err.message : err);
+      return json(request, 500, { ok: false, error: SERVER_ERR });
+    }
+  }
+
+  if (url.pathname === '/api/leaderboard' && request.method === 'GET') {
+    const levelId = url.searchParams.get('levelId');
+    const sort = url.searchParams.get('sort') || 'score';
+    const page = Number(url.searchParams.get('page') || 1);
+    if (!RANK_LEVEL_ID.test(levelId || '') || !['score', 'moves'].includes(sort) || !Number.isInteger(page) || page < 1 || page > 10000) {
+      return json(request, 400, { ok: false, error: '排行榜查询参数不合法' });
+    }
+    try {
+      const dbErr = await ensureDbOr500(request);
+      if (dbErr) return dbErr;
+      return json(request, 200, { ok: true, ...await loadLeaderboard(getLeaderboard(), levelId, sort, page) });
+    } catch (error) {
+      console.error('[router] 读排行榜异常:', error && error.message);
+      return json(request, 500, { ok: false, error: SERVER_ERR });
+    }
+  }
+
+  if (url.pathname === '/api/leaderboard' && request.method === 'POST') {
+    const who = requireUser(request);
+    if (typeof who !== 'string') return who;
+    try {
+      const parsed = await readJsonBody(request, MAX_BODY_BYTES);
+      const run = !parsed.tooLarge && sanitizeRun(parsed.value);
+      if (!run) return json(request, 400, { ok: false, error: '通关成绩不合法' });
+      const dbErr = await ensureDbOr500(request);
+      if (dbErr) return dbErr;
+      await saveRun(getLeaderboard(), who, run);
+      return json(request, 200, { ok: true });
+    } catch (error) {
+      console.error('[router] 写排行榜异常:', error && error.message);
       return json(request, 500, { ok: false, error: SERVER_ERR });
     }
   }
